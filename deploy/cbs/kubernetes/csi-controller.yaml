@@ -2,20 +2,20 @@
 kind: Deployment
 apiVersion: apps/v1
 metadata:
-  name: csi-cbsplugin-controller
+  name: cbs-csi-controller
   namespace: kube-system
 spec:
   replicas: 2
   selector:
     matchLabels:
-      app: csi-cbsplugin-controller
+      app: cbs-csi-controller
   template:
     metadata:
       labels:
-        app: csi-cbsplugin-controller
+        app: cbs-csi-controller
     spec:
       hostNetwork: true
-      serviceAccountName: csi-controller-sa
+      serviceAccountName: cbs-csi-controller-sa
       priorityClassName: system-cluster-critical
       containers:
         - name: csi-provisioner
@@ -97,7 +97,7 @@ spec:
             requests:
               cpu: 100m
               memory: 100Mi
-        - name: csi-cbsplugin
+        - name: cbs-csi
           image: ccr.ccs.tencentyun.com/k8scsi/csi-tencentcloud-cbs:v1.2.0
           command:
           - "/csi-tencentcloud-cbs"
@@ -111,13 +111,15 @@ spec:
             - name: TENCENTCLOUD_CBS_API_SECRET_ID
               valueFrom:
                 secretKeyRef:
-                  name: csi-tencentcloud
+                  name: cbs-csi-api-key
                   key: TENCENTCLOUD_CBS_API_SECRET_ID
+                  optional: true
             - name: TENCENTCLOUD_CBS_API_SECRET_KEY
               valueFrom:
                 secretKeyRef:
-                  name: csi-tencentcloud
+                  name: cbs-csi-api-key
                   key: TENCENTCLOUD_CBS_API_SECRET_KEY
+                  optional: true
             - name: POD_NAMESPACE
               valueFrom:
                 fieldRef:
